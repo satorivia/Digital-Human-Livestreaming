@@ -1,9 +1,16 @@
-from app.main import app, healthz
+import pytest
 
-def test_healthz():
-    if app is None:
-        assert healthz()['data']['status']=='ok'
-    else:
-        from fastapi.testclient import TestClient
-        r=TestClient(app).get('/api/v1/healthz')
-        assert r.status_code==200 and r.json()['data']['status']=='ok'
+pytest.importorskip("pydantic")
+pytest.importorskip("fastapi")
+pytest.importorskip("pydantic_settings")
+
+from fastapi.testclient import TestClient
+
+from app.main import app
+
+
+def test_healthz() -> None:
+    response = TestClient(app).get("/api/v1/healthz")
+
+    assert response.status_code == 200
+    assert response.json()["data"]["status"] == "ok"

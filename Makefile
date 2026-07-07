@@ -14,9 +14,9 @@ seed:
 test:
 	pytest
 lint:
-	ruff check --ignore E701,E702,E401,F403,F405 apps/api-server packages/event-schema packages/shared-types
+	ruff check apps/api-server packages/event-schema packages/shared-types
 typecheck:
-	mypy --ignore-missing-imports apps/api-server/app
+	mypy apps/api-server/app packages/event-schema/*.py packages/shared-types/*.py
 e2e:
 	pytest apps/api-server/tests/test_e2e_mock_flow.py
 frontend-test:

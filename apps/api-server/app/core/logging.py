@@ -1,7 +1,14 @@
-import logging, json
+import logging
 
-def configure_logging(level: str='INFO') -> None:
-    logging.basicConfig(level=level, format='%(message)s')
+import structlog
 
-def log_json(**fields):
-    logging.getLogger('digital_human').info(json.dumps(fields, ensure_ascii=False))
+
+def configure_logging(level: str = "INFO") -> None:
+    logging.basicConfig(level=level)
+    structlog.configure(
+        processors=[
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.processors.add_log_level,
+            structlog.processors.JSONRenderer(),
+        ],
+    )
