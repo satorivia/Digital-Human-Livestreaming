@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Digital Human Live API
+  version: 1.0.0
+  description: API contract draft for the digital human live streaming system.
+servers:
+  - url: http://localhost:8000/api/v1
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /products:
+    post:
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+      responses:
+        '200':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseProduct'
+    get:
+      summary: List products
+      responses:
+        '200':
+          description: Product list
+  /products/{product_id}:
+    get:
+      summary: Get product
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product detail
+    put:
+      summary: Update product
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updated
+  /live-sessions:
+    post:
+      summary: Create live session
+      responses:
+        '200':
+          description: Created
+    get:
+      summary: List live sessions
+      responses:
+        '200':
+          description: Live sessions
+  /live-sessions/{session_id}/start:
+    post:
+      summary: Start live session
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Started
+  /live-sessions/{session_id}/comments/mock:
+    post:
+      summary: Create mock comment event
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MockCommentRequest'
+      responses:
+        '200':
+          description: Comment created
+  /comments/{comment_task_id}/generate-answer:
+    post:
+      summary: Generate candidate answer for comment
+      parameters:
+        - name: comment_task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Answer generated
+  /review-tasks/{task_id}/approve:
+    post:
+      summary: Approve review task
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approved
+  /tts/generate:
+    post:
+      summary: Generate TTS audio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TTSGenerateRequest'
+      responses:
+        '200':
+          description: TTS result
+  /avatar/speak-audio:
+    post:
+      summary: Ask avatar to speak audio
+      responses:
+        '200':
+          description: Command accepted
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          nullable: true
+        error:
+          nullable: true
+        request_id:
+          type: string
+    ProductCreate:
+      type: object
+      required: [merchant_id, title]
+      properties:
+        merchant_id:
+          type: string
+        title:
+          type: string
+        brand:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/ProductCreate'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    ApiResponseProduct:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+    MockCommentRequest:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+        nickname:
+          type: string
+        product_id:
+          type: string
+    TTSGenerateRequest:
+      type: object
+      required: [merchant_id, text, voice_id]
+      properties:
+        merchant_id:
+          type: string
+        text:
+          type: string
+        voice_id:
+          type: string
+        language:
+          type: string
+          default: zh-CN
+        speed:
+          type: number
+          default: 1.0
+        emotion:
+          type: string
+        platform:
+          type: string
+        cache_enabled:
+          type: boolean
+          default: true

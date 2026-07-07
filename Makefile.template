@@ -1,0 +1,44 @@
+.PHONY: help install up down migrate seed test lint typecheck e2e docs
+
+help:
+	@echo "Available commands:"
+	@echo "  make install"
+	@echo "  make up"
+	@echo "  make down"
+	@echo "  make migrate"
+	@echo "  make seed"
+	@echo "  make test"
+	@echo "  make lint"
+	@echo "  make typecheck"
+	@echo "  make e2e"
+	@echo "  make docs"
+
+install:
+	@echo "Install backend and frontend dependencies"
+
+up:
+	docker compose -f infra/docker-compose.yml up -d
+
+down:
+	docker compose -f infra/docker-compose.yml down
+
+migrate:
+	@echo "Run Alembic migrations"
+
+seed:
+	@echo "Seed local development data"
+
+test:
+	@echo "Run tests"
+
+lint:
+	@echo "Run lint"
+
+typecheck:
+	@echo "Run typecheck"
+
+e2e:
+	@echo "Run E2E tests"
+
+docs:
+	@echo "Validate docs and OpenAPI"
