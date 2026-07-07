@@ -114,3 +114,21 @@ OBS / SRS 预览与推流
 - 所有 AI 生成播报必须经过 ComplianceService。
 - 高风险问题必须人工审核。
 - 每句话都必须留日志。
+
+## 本地开发快速启动
+
+```bash
+make install
+make up
+make migrate
+make test
+make e2e
+make lint
+make typecheck
+```
+
+- API 健康检查：`GET /api/v1/healthz`
+- Admin Web：`cd apps/admin-web && npm install && npm run dev`
+- Control Web：`cd apps/control-web && npm install && npm run dev`
+
+当前实现默认使用 Mock Provider，不需要任何真实平台、TTS、LLM 或 LiveTalking 密钥。

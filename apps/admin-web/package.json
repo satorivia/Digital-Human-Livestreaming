@@ -1,0 +1,1 @@
+{"scripts":{"dev":"vite --host 0.0.0.0 --port 5173","test":"vitest"},"dependencies":{"@vitejs/plugin-vue":"latest","vite":"latest","vue":"latest","typescript":"latest","element-plus":"latest","pinia":"latest","vue-router":"latest","axios":"latest","vitest":"latest","jsdom":"latest"},"devDependencies":{}}
