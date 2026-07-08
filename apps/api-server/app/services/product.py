@@ -25,3 +25,8 @@ class ProductService:
         product = self.store.products[product_id]
         product.selling_points.append(text)
         return product
+
+    def add_forbidden_claim(self, product_id: str, text: str) -> Product:
+        product = self.store.products[product_id]
+        product.forbidden.append(text)
+        return product

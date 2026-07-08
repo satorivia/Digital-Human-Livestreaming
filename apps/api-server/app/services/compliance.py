@@ -50,6 +50,17 @@ class AbsoluteClaimChecker:
         ]
 
 
+class ProductForbiddenClaimChecker:
+    def check(self, text: str, product: Product | None = None) -> list[RuleHit]:
+        if product is None:
+            return []
+        return [
+            RuleHit("product_forbidden_claim", Risk.BLOCKED, f"命中商品禁用表达：{claim}")
+            for claim in product.forbidden
+            if claim and claim in text
+        ]
+
+
 class PriceConsistencyChecker:
     def check(self, text: str, product: Product | None = None) -> list[RuleHit]:
         if product is None or not product.skus:
@@ -70,6 +81,7 @@ class ComplianceService:
         self.checkers = checkers or [
             SensitiveWordChecker(),
             AbsoluteClaimChecker(),
+            ProductForbiddenClaimChecker(),
             PriceConsistencyChecker(),
         ]
 

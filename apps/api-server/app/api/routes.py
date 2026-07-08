@@ -4,6 +4,7 @@ from app.api.dependencies import ServiceContainer, get_container
 from app.api.schemas import (
     ApiResponse,
     FaqCreateRequest,
+    ForbiddenClaimCreateRequest,
     LiveSessionCreateRequest,
     MockCommentRequest,
     ProductCreateRequest,
@@ -69,6 +70,16 @@ def add_selling_point(
     services: ServiceContainer = Depends(get_container),
 ) -> ApiResponse:
     product = services.products.add_selling_point(product_id, request.text)
+    return ok(product)
+
+
+@router.post("/products/{product_id}/forbidden-claims", response_model=ApiResponse)
+def add_forbidden_claim(
+    product_id: str,
+    request: ForbiddenClaimCreateRequest,
+    services: ServiceContainer = Depends(get_container),
+) -> ApiResponse:
+    product = services.products.add_forbidden_claim(product_id, request.text)
     return ok(product)
 
 

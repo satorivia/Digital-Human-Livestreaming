@@ -1,6 +1,6 @@
 # 后续建议
 
-1. 继续 P0-2：把 P0-1 API 从 in-memory Store 逐步切换为 SQLAlchemy repository，优先 Product、LiveSession、Review、SpeechTask。
+1. 继续 P0-2：把 P0-1 API 从 in-memory Store 逐步切换为 SQLAlchemy repository，优先 Product、LiveSession、Review、SpeechTask；保留 forbidden claim blocked 防护测试作为回归用例。
 2. 为新增主链路表补充真实数据库 repository 测试和 API-level DB E2E：comment_task、answer_candidate、compliance_result、human_review_task、speech_task、tts_asset、avatar_command_log、audit_log。
 3. 继续将 control-web 页面从静态 fallback 数据切换到 Pinia store 数据，并补齐评论生成、审核通过、播报播放的端到端 UI 操作。
 4. 为 VoiceProfile、VoiceLicense、AvatarAsset 增加更完整的授权字段、过期时间和审计查询。

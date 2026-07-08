@@ -34,6 +34,20 @@ def test_compliance_uses_split_checkers_for_low_medium_high_and_blocked() -> Non
     assert blocked.risk == Risk.BLOCKED and blocked.blocked
 
 
+def test_product_forbidden_claim_checker_blocks_product_specific_claim() -> None:
+    store = InMemoryStore()
+    products = ProductService(store)
+    product = products.create_product("修护霜")
+    products.add_forbidden_claim(product.id, "三天祛斑")
+
+    candidate = AnswerCandidate("comment-task-id", "坚持使用可以三天祛斑")
+    ComplianceService().check(candidate, product=product)
+
+    assert candidate.risk == Risk.BLOCKED
+    assert candidate.status == CandidateStatus.BLOCKED
+    assert "商品禁用表达" in candidate.matched_rules[0]
+
+
 def test_human_review_supports_approve_reject_rewrite_and_manual_answer() -> None:
     store = InMemoryStore()
     candidate = AnswerCandidate("comment-task-id", "原始回答")

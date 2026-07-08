@@ -56,4 +56,5 @@
 - 已新增 P0 repository 层并继续扩展覆盖：Product、LiveSession、CommentTask、AnswerCandidate、ComplianceResult、HumanReviewTask、SpeechTask、TTSAsset、AvatarCommandLog、AuditLog、KnowledgeChunk。
 - 已新增 migration/repository 静态测试，确保 P0 表和 repository 边界存在。
 - 已启动 control-web API client 和 Pinia store 接入 P0-1 API，覆盖产品加载、创建 Mock session、提交 Mock 评论、审核通过、刷新播报任务，并补充 loading/error/empty 状态。
+- 已补齐商品级 forbidden claim 的 ProductService / API / Compliance checker / 测试闭环，商品禁用表达命中后会进入 blocked，blocked candidate 在审核通过入口仍禁止创建 speech_task。
 - 当前 P0 API 尚未完全切换到 repository；下一步应把 Product/LiveSession/Review/Speech API 逐个替换为数据库 repository 实现。

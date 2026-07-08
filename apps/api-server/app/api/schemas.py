@@ -20,6 +20,10 @@ class SellingPointCreateRequest(BaseModel):
     text: str = Field(min_length=1)
 
 
+class ForbiddenClaimCreateRequest(BaseModel):
+    text: str = Field(min_length=1)
+
+
 class LiveSessionCreateRequest(BaseModel):
     product_id: str
 

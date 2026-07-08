@@ -56,6 +56,38 @@ def test_api_mock_comment_to_avatar_speech_flow() -> None:
     assert speeches[0]["status"] == "finished"
 
 
+def test_api_product_forbidden_claim_blocks_speech_creation() -> None:
+    reset_app_state()
+    client = TestClient(app)
+
+    product = client.post("/api/v1/products", json={"title": "精华液"}).json()["data"]
+    product_id = product["id"]
+    client.post(
+        f"/api/v1/products/{product_id}/skus",
+        json={"name": "默认", "price_cents": 19900, "stock": 50},
+    )
+    client.post(
+        f"/api/v1/products/{product_id}/forbidden-claims",
+        json={"text": "三天祛斑"},
+    )
+    session = client.post("/api/v1/live-sessions", json={"product_id": product_id}).json()["data"]
+    session_id = session["id"]
+    client.post(f"/api/v1/live-sessions/{session_id}/start")
+
+    comment_response = client.post(
+        f"/api/v1/live-sessions/{session_id}/mock-comments",
+        json={"content": "这款能三天祛斑吗？", "user": "观众C"},
+    ).json()["data"]
+
+    assert comment_response["candidate"]["risk"] == "blocked"
+    blocked = client.post(
+        f"/api/v1/review-tasks/{comment_response['review']['id']}/approve",
+        json={"reviewer_id": "operator-1"},
+    )
+    assert blocked.status_code == 400
+    assert client.get("/api/v1/speech-tasks").json()["data"] == []
+
+
 def test_api_blocks_blocked_candidate_before_speech_task_creation() -> None:
     reset_app_state()
     client = TestClient(app)
