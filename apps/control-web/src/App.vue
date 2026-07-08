@@ -25,7 +25,11 @@
         <el-col :span="8">
           <el-card shadow="never">
             <template #header>评论队列</template>
-            <el-input v-model="mockComment" placeholder="模拟评论：这款多少钱" />
+            <el-input v-model="mockComment" placeholder="模拟评论：这款多少钱">
+              <template #append>
+                <el-button @click="flow.submitMockComment(mockComment)">发送</el-button>
+              </template>
+            </el-input>
             <el-table :data="comments" class="section">
               <el-table-column prop="user" label="用户" width="90" />
               <el-table-column prop="content" label="评论" />
@@ -44,7 +48,7 @@
               <el-tag :type="riskTagType">{{ candidate.risk }}</el-tag>
             </div>
             <el-space wrap>
-              <el-button type="primary">审核通过</el-button>
+              <el-button type="primary" @click="flow.approvePendingReview">审核通过</el-button>
               <el-button type="danger">拒绝</el-button>
               <el-button>编辑后通过</el-button>
             </el-space>
@@ -66,8 +70,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useMockFlowStore } from './stores/mockFlow';
 
+const flow = useMockFlowStore();
 const mockComment = ref('这款多少钱？');
 const session = reactive({
   platform: 'MockPlatform',
@@ -88,6 +94,10 @@ const speechHistory = [
   { id: 'speech-2', text: '这款保湿面霜当前价格以页面为准', status: 'finished' },
 ];
 const riskTagType = computed(() => (candidate.risk === 'low' ? 'success' : 'warning'));
+
+onMounted(() => {
+  void flow.loadProducts();
+});
 </script>
 
 <style scoped>

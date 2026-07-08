@@ -50,4 +50,10 @@
 - 已新增 API ServiceContainer，将现有 Mock services 组合成可由 HTTP 调用的 in-memory MVP 边界。
 - 已新增 API-level Mock flow 测试：创建商品 → SKU/FAQ/卖点 → 索引 → 创建并启动直播 → 模拟评论 → 合规/人审 → speech task → MockAvatar 播报完成。
 - 已新增 API-level blocked 防护测试，确保 blocked candidate 在 approve 入口不会创建 speech_task。
-- 当前 API 仍使用 in-memory Store，下一步应进入 P0-2 SQLAlchemy repository 落地。
+
+## P0-2 / P0-3 / P0-4：持久化与前端联动启动
+- 已新增 P0 主链路缺失表的 SQLAlchemy models 和 Alembic migration：卖点、禁用表达、知识块、评论任务、候选回答、合规结果、人审任务、播报任务、TTS 资产、Avatar 命令日志、审计日志。
+- 已新增 P0 repository 层初版：Product、LiveSession、CommentTask、AnswerCandidate、HumanReviewTask、SpeechTask、AuditLog。
+- 已新增 migration/repository 静态测试，确保 P0 表和 repository 边界存在。
+- 已启动 control-web API client 和 Pinia store 接入 P0-1 API，覆盖产品加载、创建 Mock session、提交 Mock 评论、审核通过、刷新播报任务。
+- 当前 P0 API 尚未完全切换到 repository；下一步应把 Product/LiveSession/Review/Speech API 逐个替换为数据库 repository 实现。
