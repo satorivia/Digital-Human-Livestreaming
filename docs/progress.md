@@ -44,3 +44,10 @@
 - 已完成淘宝评论、上下播、订单 raw event 到 PlatformEvent 的 normalize_event。
 - 已完成平台商品 ID 到内部商品 ID 的映射模型和 Alembic migration。
 - 已完成淘宝 Adapter 契约测试，确保用户 ID/订单 ID 仅以 hash 形式保留。
+
+## P0-1：Mock 主链路 API
+- 已新增 FastAPI route 层，覆盖商品、SKU、FAQ、卖点、索引、直播场次、Mock 评论、候选回答、人审、speech task 播放/打断。
+- 已新增 API ServiceContainer，将现有 Mock services 组合成可由 HTTP 调用的 in-memory MVP 边界。
+- 已新增 API-level Mock flow 测试：创建商品 → SKU/FAQ/卖点 → 索引 → 创建并启动直播 → 模拟评论 → 合规/人审 → speech task → MockAvatar 播报完成。
+- 已新增 API-level blocked 防护测试，确保 blocked candidate 在 approve 入口不会创建 speech_task。
+- 当前 API 仍使用 in-memory Store，下一步应进入 P0-2 SQLAlchemy repository 落地。
