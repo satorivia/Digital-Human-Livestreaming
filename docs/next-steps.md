@@ -8,3 +8,4 @@
 6. 扩展合规规则后台与价格一致性强校验。
 7. 为 Makefile 增加 CI 环境依赖缓存说明，避免网络不可用时阻塞本地验证。
 8. 增加 AvatarAsset 授权模型和 migration，确保数字人形象使用授权可审计。
+9. 下一批建议推进 DouyinAdapter 保守配置/normalize_event 骨架；仍不得封装真实平台任务启动或拉流接口。

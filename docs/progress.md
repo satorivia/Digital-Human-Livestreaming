@@ -37,3 +37,10 @@
 - 已完成 MediaService SRS 预览 URL 占位。
 - 已更新 OBS/SRS 使用文档占位。
 - 真实 Provider 后续接入前仍必须保留 Mock 契约测试。
+
+## 阶段 3：淘宝 Adapter 保守骨架
+- 已完成 TaobaoLiveAdapterConfig Pydantic 配置模型，secret 字段使用 SecretStr。
+- 已完成淘宝事件验签占位和 raw payload hash-log，不接真实淘宝 API。
+- 已完成淘宝评论、上下播、订单 raw event 到 PlatformEvent 的 normalize_event。
+- 已完成平台商品 ID 到内部商品 ID 的映射模型和 Alembic migration。
+- 已完成淘宝 Adapter 契约测试，确保用户 ID/订单 ID 仅以 hash 形式保留。

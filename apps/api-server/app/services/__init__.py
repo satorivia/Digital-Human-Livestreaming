@@ -27,6 +27,11 @@ from app.services.live import IllegalLiveStateTransition, LiveSessionStateMachin
 from app.services.llm import LLMGateway
 from app.services.media import MediaService
 from app.services.platform import MockPlatformAdapter
+from app.services.platform_adapters import (
+    PlatformProductMapping,
+    TaobaoLiveAdapter,
+    TaobaoLiveAdapterConfig,
+)
 from app.services.product import ProductService
 from app.services.rag import ProductRAG
 from app.services.review import HumanReviewService
@@ -66,6 +71,7 @@ __all__ = [
     "LiveTalkingProvider",
     "MediaService",
     "MockPlatformAdapter",
+    "PlatformProductMapping",
     "MockTTSProvider",
     "PriceConsistencyChecker",
     "Product",
@@ -78,6 +84,8 @@ __all__ = [
     "SpeechQueueService",
     "SpeechStatus",
     "SpeechTask",
+    "TaobaoLiveAdapter",
+    "TaobaoLiveAdapterConfig",
     "TTSAsset",
     "TTSProvider",
     "TTSService",

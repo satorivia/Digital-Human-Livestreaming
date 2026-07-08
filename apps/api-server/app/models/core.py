@@ -68,3 +68,12 @@ class VoiceLicenseModel(Base):
     voice_profile_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
     authorized_by: Mapped[str] = mapped_column(String(200), nullable=False)
     authorization_record_url: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class PlatformProductMappingModel(Base):
+    __tablename__ = "platform_product_mapping"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    platform: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    platform_product_id: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
+    product_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
