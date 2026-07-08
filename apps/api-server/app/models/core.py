@@ -50,3 +50,21 @@ class LiveSessionModel(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     product_id: Mapped[str] = mapped_column(String, nullable=False)
     state: Mapped[str] = mapped_column(String(80), nullable=False)
+
+
+class VoiceProfileModel(Base):
+    __tablename__ = "voice_profile"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    provider: Mapped[str] = mapped_column(String(80), nullable=False)
+    voice_id: Mapped[str] = mapped_column(String(200), nullable=False)
+
+
+class VoiceLicenseModel(Base):
+    __tablename__ = "voice_license"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    voice_profile_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    authorized_by: Mapped[str] = mapped_column(String(200), nullable=False)
+    authorization_record_url: Mapped[str] = mapped_column(Text, nullable=False)

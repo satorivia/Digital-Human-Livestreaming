@@ -49,11 +49,14 @@ def test_mock_comment_to_avatar_speech_flow() -> None:
     review_service.approve(review.id, reviewer_id="operator-1")
 
     state_machine.transition(session.id, LiveState.SPEAKING, "approved speech")
-    speech = SpeechQueueService(
+    speech_queue = SpeechQueueService(
         store,
         TTSService(store),
         AvatarGateway(store),
-    ).enqueue_and_play(review.final_text or checked.text)
+    )
+    speech_queue.enqueue_reviewed_candidate(checked, review)
+    speech = speech_queue.play_next()
+    assert speech is not None
     state_machine.transition(session.id, LiveState.LIVE, "speech finished")
     task.status = "spoken"
 
@@ -63,3 +66,30 @@ def test_mock_comment_to_avatar_speech_flow() -> None:
     assert len(store.state_logs) >= 4
     assert store.avatar_logs[-1]["status"] == "success"
     assert store.events[0].raw_payload_hash
+
+
+def test_blocked_answer_never_creates_speech_task() -> None:
+    store = InMemoryStore()
+    products = ProductService(store)
+    product = products.create_product("修护霜")
+    products.add_sku(product.id, "默认", 9900, 10)
+    candidate = LLMGateway(store, ProductRAG(store)).generate_product_answer(
+        CommentRouter(store).route(
+            MockPlatformAdapter(store).comment(
+                LiveSessionStateMachine(store).create(product.id).id,
+                "这款能治好湿疹吗？",
+            ),
+        ),
+    )
+    candidate.text = "这款能治好湿疹"
+    checked = ComplianceService().check(candidate, product=product)
+    review = HumanReviewService(store).create(checked)
+
+    with pytest.raises(Exception):
+        SpeechQueueService(store, TTSService(store), AvatarGateway(store)).enqueue_reviewed_candidate(
+            checked,
+            review,
+        )
+
+    assert checked.risk == Risk.BLOCKED
+    assert store.speeches == {}

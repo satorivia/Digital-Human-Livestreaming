@@ -5,6 +5,8 @@ from app.models.core import (
     ProductFaqModel,
     ProductModel,
     SkuModel,
+    VoiceLicenseModel,
+    VoiceProfileModel,
 )
 
 __all__ = [
@@ -14,4 +16,6 @@ __all__ = [
     "ProductFaqModel",
     "ProductModel",
     "SkuModel",
+    "VoiceLicenseModel",
+    "VoiceProfileModel",
 ]

@@ -33,6 +33,19 @@ class ReviewStatus(StrEnum):
     REJECTED = "rejected"
 
 
+class SpeechStatus(StrEnum):
+    QUEUED = "queued"
+    SPEAKING = "speaking"
+    FINISHED = "finished"
+    INTERRUPTED = "interrupted"
+    FAILED = "failed"
+
+
+class AvatarCommandStatus(StrEnum):
+    SUCCESS = "success"
+    FAILED = "failed"
+
+
 @dataclass(slots=True)
 class SKU:
     name: str
@@ -94,7 +107,10 @@ class SpeechTask:
     text: str
     audio_url: str | None = None
     priority: int = 100
-    status: str = "queued"
+    status: SpeechStatus = SpeechStatus.QUEUED
+    candidate_id: str | None = None
+    review_id: str | None = None
+    failure_reason: str | None = None
     id: str = field(default_factory=lambda: str(uuid4()))
 
 
@@ -105,4 +121,20 @@ class TTSAsset:
     audio_url: str
     provider: str
     duration_ms: int
+    id: str = field(default_factory=lambda: str(uuid4()))
+
+
+@dataclass(slots=True)
+class VoiceProfile:
+    name: str
+    provider: str
+    voice_id: str
+    id: str = field(default_factory=lambda: str(uuid4()))
+
+
+@dataclass(slots=True)
+class VoiceLicense:
+    voice_profile_id: str
+    authorized_by: str
+    authorization_record_url: str
     id: str = field(default_factory=lambda: str(uuid4()))

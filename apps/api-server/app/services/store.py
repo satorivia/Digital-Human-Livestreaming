@@ -8,6 +8,8 @@ from app.services.entities import (
     Product,
     SpeechTask,
     TTSAsset,
+    VoiceLicense,
+    VoiceProfile,
 )
 
 
@@ -31,4 +33,6 @@ class InMemoryStore:
         self.avatar_logs: list[dict[str, object]] = []
         self.llm_logs: list[dict[str, object]] = []
         self.tts_assets: dict[str, TTSAsset] = {}
+        self.voice_profiles: dict[str, VoiceProfile] = {}
+        self.voice_licenses: dict[str, VoiceLicense] = {}
         self.knowledge: list[tuple[str, str]] = []
