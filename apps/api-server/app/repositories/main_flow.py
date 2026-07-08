@@ -7,14 +7,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import (
     AnswerCandidateModel,
     AuditLogModel,
+    AvatarCommandLogModel,
     CommentTaskModel,
+    ComplianceResultModel,
     HumanReviewTaskModel,
+    KnowledgeChunkModel,
     LiveSessionModel,
     ProductFaqModel,
+    ProductForbiddenClaimModel,
     ProductModel,
     ProductSellingPointModel,
     SkuModel,
     SpeechTaskModel,
+    TTSAssetModel,
 )
 
 
@@ -58,11 +63,39 @@ class ProductRepository:
         await self.session.flush()
         return selling_point
 
+    async def add_forbidden_claim(self, product_id: str, text: str) -> ProductForbiddenClaimModel:
+        claim = ProductForbiddenClaimModel(id=str(uuid4()), product_id=product_id, text=text)
+        self.session.add(claim)
+        await self.session.flush()
+        return claim
+
     async def get(self, product_id: str) -> ProductModel | None:
         return await self.session.get(ProductModel, product_id)
 
     async def list(self) -> Sequence[ProductModel]:
         result = await self.session.execute(select(ProductModel))
+        return result.scalars().all()
+
+
+class KnowledgeChunkRepository:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+
+    async def create(self, product_id: str, source_type: str, content: str) -> KnowledgeChunkModel:
+        chunk = KnowledgeChunkModel(
+            id=str(uuid4()),
+            product_id=product_id,
+            source_type=source_type,
+            content=content,
+        )
+        self.session.add(chunk)
+        await self.session.flush()
+        return chunk
+
+    async def list_for_product(self, product_id: str) -> Sequence[KnowledgeChunkModel]:
+        result = await self.session.execute(
+            select(KnowledgeChunkModel).where(KnowledgeChunkModel.product_id == product_id),
+        )
         return result.scalars().all()
 
 
@@ -135,6 +168,29 @@ class AnswerCandidateRepository:
         return candidate
 
 
+class ComplianceResultRepository:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+
+    async def create(
+        self,
+        candidate_id: str,
+        risk: str,
+        need_human_review: bool,
+        matched_rules: str = "[]",
+    ) -> ComplianceResultModel:
+        result = ComplianceResultModel(
+            id=str(uuid4()),
+            candidate_id=candidate_id,
+            risk=risk,
+            need_human_review=str(need_human_review).lower(),
+            matched_rules=matched_rules,
+        )
+        self.session.add(result)
+        await self.session.flush()
+        return result
+
+
 class HumanReviewTaskRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -200,6 +256,54 @@ class SpeechTaskRepository:
         task.failure_reason = failure_reason
         await self.session.flush()
         return task
+
+
+class TTSAssetRepository:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+
+    async def create(
+        self,
+        cache_key: str,
+        text: str,
+        audio_url: str,
+        provider: str,
+        duration_ms: int,
+    ) -> TTSAssetModel:
+        asset = TTSAssetModel(
+            id=str(uuid4()),
+            cache_key=cache_key,
+            text=text,
+            audio_url=audio_url,
+            provider=provider,
+            duration_ms=duration_ms,
+        )
+        self.session.add(asset)
+        await self.session.flush()
+        return asset
+
+
+class AvatarCommandLogRepository:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+
+    async def append(
+        self,
+        command: str,
+        status: str,
+        speech_id: str | None = None,
+        message: str | None = None,
+    ) -> AvatarCommandLogModel:
+        log = AvatarCommandLogModel(
+            id=str(uuid4()),
+            speech_id=speech_id,
+            command=command,
+            status=status,
+            message=message,
+        )
+        self.session.add(log)
+        await self.session.flush()
+        return log
 
 
 class AuditLogRepository:

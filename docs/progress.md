@@ -53,7 +53,7 @@
 
 ## P0-2 / P0-3 / P0-4：持久化与前端联动启动
 - 已新增 P0 主链路缺失表的 SQLAlchemy models 和 Alembic migration：卖点、禁用表达、知识块、评论任务、候选回答、合规结果、人审任务、播报任务、TTS 资产、Avatar 命令日志、审计日志。
-- 已新增 P0 repository 层初版：Product、LiveSession、CommentTask、AnswerCandidate、HumanReviewTask、SpeechTask、AuditLog。
+- 已新增 P0 repository 层并继续扩展覆盖：Product、LiveSession、CommentTask、AnswerCandidate、ComplianceResult、HumanReviewTask、SpeechTask、TTSAsset、AvatarCommandLog、AuditLog、KnowledgeChunk。
 - 已新增 migration/repository 静态测试，确保 P0 表和 repository 边界存在。
-- 已启动 control-web API client 和 Pinia store 接入 P0-1 API，覆盖产品加载、创建 Mock session、提交 Mock 评论、审核通过、刷新播报任务。
+- 已启动 control-web API client 和 Pinia store 接入 P0-1 API，覆盖产品加载、创建 Mock session、提交 Mock 评论、审核通过、刷新播报任务，并补充 loading/error/empty 状态。
 - 当前 P0 API 尚未完全切换到 repository；下一步应把 Product/LiveSession/Review/Speech API 逐个替换为数据库 repository 实现。

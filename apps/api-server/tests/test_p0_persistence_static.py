@@ -33,6 +33,10 @@ def test_repository_layer_declares_p0_boundaries() -> None:
         "AnswerCandidateRepository",
         "HumanReviewTaskRepository",
         "SpeechTaskRepository",
+        "ComplianceResultRepository",
+        "KnowledgeChunkRepository",
+        "TTSAssetRepository",
+        "AvatarCommandLogRepository",
         "AuditLogRepository",
     ]:
         assert f"class {class_name}" in repository

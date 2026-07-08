@@ -2,7 +2,7 @@
   <el-container class="control-shell">
     <el-header class="header">
       <b>直播场控台</b>
-      <el-tag type="success">{{ session.state }}</el-tag>
+      <el-tag type="success">{{ flow.currentSession?.state ?? session.state }}</el-tag>
     </el-header>
     <el-main>
       <el-row :gutter="12">
@@ -11,11 +11,11 @@
             <template #header>直播状态</template>
             <el-descriptions :column="1" border>
               <el-descriptions-item label="平台">{{ session.platform }}</el-descriptions-item>
-              <el-descriptions-item label="当前商品">{{ session.product }}</el-descriptions-item>
+              <el-descriptions-item label="当前商品">{{ flow.currentProduct?.title ?? session.product }}</el-descriptions-item>
               <el-descriptions-item label="推流状态">{{ session.streamHealth }}</el-descriptions-item>
             </el-descriptions>
             <div class="actions">
-              <el-button type="warning">人工接管</el-button>
+              <el-button type="warning" :loading="flow.loading">人工接管</el-button>
               <el-button>打断播报</el-button>
               <el-button>切备用视频</el-button>
             </div>
@@ -27,10 +27,12 @@
             <template #header>评论队列</template>
             <el-input v-model="mockComment" placeholder="模拟评论：这款多少钱">
               <template #append>
-                <el-button @click="flow.submitMockComment(mockComment)">发送</el-button>
+                <el-button :disabled="!flow.canSubmitComment" :loading="flow.loading" @click="flow.submitMockComment(mockComment)">发送</el-button>
               </template>
             </el-input>
-            <el-table :data="comments" class="section">
+            <el-alert v-if="flow.errorMessage" :title="flow.errorMessage" type="error" show-icon class="section" />
+            <el-empty v-if="!flow.comments.length" description="暂无评论任务" />
+            <el-table :data="flow.comments.length ? flow.comments : comments" class="section">
               <el-table-column prop="user" label="用户" width="90" />
               <el-table-column prop="content" label="评论" />
               <el-table-column prop="intent" label="意图" width="100" />
@@ -48,14 +50,14 @@
               <el-tag :type="riskTagType">{{ candidate.risk }}</el-tag>
             </div>
             <el-space wrap>
-              <el-button type="primary" @click="flow.approvePendingReview">审核通过</el-button>
+              <el-button type="primary" :disabled="!flow.canApproveReview" :loading="flow.loading" @click="flow.approvePendingReview">审核通过</el-button>
               <el-button type="danger">拒绝</el-button>
               <el-button>编辑后通过</el-button>
             </el-space>
             <h3>播报历史</h3>
             <el-timeline>
               <el-timeline-item
-                v-for="item in speechHistory"
+                v-for="item in flow.speeches.length ? flow.speeches : speechHistory"
                 :key="item.id"
                 :type="item.status === 'finished' ? 'success' : 'warning'"
               >
@@ -95,8 +97,11 @@ const speechHistory = [
 ];
 const riskTagType = computed(() => (candidate.risk === 'low' ? 'success' : 'warning'));
 
-onMounted(() => {
-  void flow.loadProducts();
+onMounted(async () => {
+  await flow.loadProducts();
+  if (flow.currentProduct) {
+    await flow.createMockSession(flow.currentProduct.id);
+  }
 });
 </script>
 
